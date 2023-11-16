@@ -40,9 +40,6 @@ import requests
 # Send GET request
 fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
 
-# Show json response
-streamlit.text(fruityvice_response.json())
-
 # Normalize json
 fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 
