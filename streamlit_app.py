@@ -35,18 +35,23 @@ streamlit.dataframe(fruits_to_show)
 # Fruityvice header
 streamlit.header("Fruityvice Fruit Advice!")
 
-# Add a selector for the fruit
-fruit_choice = streamlit.text_input('What fruit would you like information about?','Kiwi')
-streamlit.write('The user entered ', fruit_choice)
+try:
+    # Add a selector for the fruit
+    fruit_choice = streamlit.text_input('What fruit would you like information about?')
+    if not fruit_choice:
+        streamlit.error("Please select a fruit to get information.")
+    else:
+        # Send GET request
+        fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{fruit_choice}")
 
-# Send GET request
-fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{fruit_choice}")
+        # Normalize json
+        fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
 
-# Normalize json
-fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+        # Display the json in a table
+        streamlit.dataframe(fruityvice_normalized)
 
-# Display the json in a table
-streamlit.dataframe(fruityvice_normalized)
+except URLError as e:
+    streamlit.error()
 
 streamlit.stop()
 
